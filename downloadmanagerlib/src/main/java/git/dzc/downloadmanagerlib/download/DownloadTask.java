@@ -119,11 +119,15 @@ public class DownloadTask implements Runnable {
                 e.printStackTrace();
             }
         }
-        downloadStatus = DownloadStatus.DOWNLOAD_STATUS_COMPLETED;
-        dbEntity.setDownloadStatus(downloadStatus);
-        downloadDao.update(dbEntity);
+        if (downloadStatus != DownloadStatus.DOWNLOAD_STATUS_CANCEL) {
+            downloadStatus = DownloadStatus.DOWNLOAD_STATUS_COMPLETED;
+            dbEntity.setDownloadStatus(downloadStatus);
+            downloadDao.update(dbEntity);
 
-        onCompleted();
+            onCompleted();
+        } else {
+            onError(DownloadStatus.DOWNLOAD_STATUS_CANCEL);
+        }
     }
 
     public String getId() {
